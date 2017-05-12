@@ -14,12 +14,18 @@ public class ServerThread extends Thread
         MyMessageProvider producer = new MyMessageProvider();
 
             String mes = "";
+            Scanner scan;
             while (true)
             {
-
-                Scanner scan= new Scanner(System.in);
+                scan = new Scanner(System.in);
                 mes = scan.nextLine();
                 producer.sendMessage( mes);
+
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
     }
 }

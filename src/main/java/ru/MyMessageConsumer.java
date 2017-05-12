@@ -10,14 +10,19 @@ import javax.jms.*;
 public class MyMessageConsumer
 {
 
+    private int id = 0;
+
+
+    public MyMessageConsumer(int id) {
+        this.id = id;
+    }
+
     public Connection createConnection() throws JMSException {
         ActiveMQConnectionFactory activeMQConnectionFactory =
                 new ActiveMQConnectionFactory("vm://localhost");
 
         return activeMQConnectionFactory.createConnection();
     }
-
-
 
     public void receiveMessage()
     {
@@ -30,21 +35,30 @@ public class MyMessageConsumer
 
 
 
-            Destination destination = session.createQueue("MyQueue");
+            Destination destination = session.createTopic("MyQueue");
 
             MessageConsumer messageConsumer = session.createConsumer(destination);
 
-            Message message = messageConsumer.receive(10000);
-
-            if (message != null)
+            messageConsumer.setMessageListener(new MessageListener()
             {
-                System.out.println( ((TextMessage)  message).getText() );
-                System.out.print("Client: ");
-            }
+                @Override
+                public void onMessage(Message message) {
 
-            messageConsumer.close();
-            session.close();
-            connection.close();
+                    try {
+                        if (message != null)
+                        {
+                            System.out.println( "Client" + id + ": " + ((TextMessage)  message).getText() );
+                        }
+
+                    } catch (JMSException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+
+
+
 
         } catch (JMSException e) {
             e.printStackTrace();

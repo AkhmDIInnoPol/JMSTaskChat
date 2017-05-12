@@ -29,18 +29,18 @@ public class MyMessageProvider
 
 
 
-            Destination destination = session.createQueue("MyQueue");
+            Destination destination = session.createTopic("MyQueue");
+
             MessageProducer messageProducer = session.createProducer(destination);
 
             messageProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);//
             // persistent from not persistent depend from speed. Persistent save messages so it more slow..
 
-            TextMessage textMessage = session.createTextMessage("Server: " + message);
+            TextMessage textMessage = session.createTextMessage(message);
 
             messageProducer.send(textMessage);
 
-            session.close();
-            connection.close();
+
 
         } catch (JMSException e) {
             e.printStackTrace();
